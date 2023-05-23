@@ -30,6 +30,9 @@ class _DaftarPaketPageState extends State<DaftarPaketPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Color(0xFF70986C),
+          title: Text('Daftar Paket')),
       body:     ListView.builder(
                 itemCount: _listPaket.length,
                 itemBuilder:(context, index){
