@@ -24,6 +24,25 @@ class _BerandaPageState extends State<BerandaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        backgroundColor: Color(0xFF70986C),
+        title: ElevatedButton.icon(
+            icon: Icon(Icons.search),
+            label: Text("Lacak Pesanan"),
+            onPressed: (){},
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF717070),
+                foregroundColor: Colors.white,
+                shape:RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32)
+                )
+            )
+        ),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
       body: OSMFlutter(controller: _mapController,
         mapIsLoading: const Center(
             child: CircularProgressIndicator()

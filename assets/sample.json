@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "p1",
+      "resi": "11234",
+      "nama": "Daniel Purwanto",
+      "alamat": "Jember"
+    },
+    {
+      "id": "p2",
+      "resi": "22314",
+      "nama": "Arif Purnomo",
+      "alamat": "Mangli, Jember"
+    }
+  ]
+}
