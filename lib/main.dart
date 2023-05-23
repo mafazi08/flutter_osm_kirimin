@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:flutter_osm_kirimin/Page/Bantuan.dart';
+import 'package:flutter_osm_kirimin/Page/Beranda.dart';
+import 'package:flutter_osm_kirimin/Page/Lacak_Paket.dart';
+import 'package:flutter_osm_kirimin/Page/Saya.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,17 +54,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final _mapController = MapController(
-    initMapWithUserPosition: true
-  );
+  int _currentIndex = 0;
 
+  final tabs = [
+    BerandaPage(),
+    LacakPaketPage(),
+    BantuanPage(),
+    SayaPage(),
+  ];
 
-  @override
-  void dispose() {
-    super.dispose();
-    _mapController.dispose();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
 
@@ -85,49 +87,22 @@ class _MyHomePageState extends State<MyHomePage> {
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
-      body: OSMFlutter(controller: _mapController,
-      mapIsLoading: const Center(
-          child: CircularProgressIndicator()
-      ),
-        trackMyPosition: true,
-        initZoom: 15,
-        minZoomLevel: 9,
-        maxZoomLevel: 19,
-        stepZoom: 1.0,
-        androidHotReloadSupport: true,
-        userLocationMarker: UserLocationMaker (
-          personMarker: const MarkerIcon(
-            icon: Icon(Icons.personal_injury,color: Color(0xFF70986C),size: 96),
-          ),
-          directionArrowMarker: const MarkerIcon(
-            icon: Icon(Icons.location_on,color: Color(0xFF70986C),size: 96,)
-          )
-        ),
-        roadConfiguration: const RoadOption(roadColor: Colors.blueGrey),
-        markerOption: MarkerOption(
-          defaultMarker: MarkerIcon(
-          icon: Icon(
-            Icons.person_pin_circle,
-            color: Color(0xFF70986C),
-            size: 96,
-      ),
-      )),
-        onMapIsReady: (isReady) async {
-          if(isReady){
-            await Future.delayed(const Duration(seconds: 1),() async{
-              await _mapController.currentLocation();
-            });
-          }
-        },
-      ),
+      body: tabs[_currentIndex],
     bottomNavigationBar: BottomNavigationBar(
+      currentIndex: _currentIndex,
+      type: BottomNavigationBarType.fixed,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.home),label: "Beranda"),
         BottomNavigationBarItem(icon: Icon(Icons.backpack),label:"Lacak Paket"),
         BottomNavigationBarItem(icon: Icon(Icons.question_mark),label:"Bantuan"),
         BottomNavigationBarItem(icon: Icon(Icons.person),label: "Saya")
       ],
+      onTap: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
     ),
     );
+    }
   }
-}
