@@ -10,6 +10,7 @@ class BerandaPage extends StatefulWidget {
 }
 
 class _BerandaPageState extends State<BerandaPage> {
+  String result = '';
 
   final _mapController = MapController(
       initMapWithUserPosition: true

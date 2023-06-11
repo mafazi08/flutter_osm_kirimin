@@ -31,11 +31,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flutter_osm_plugin: ^0.53.3
+  camera: ^0.10.5+2
+  flutter_barcode_scanner: ^2.0.0
+  simple_barcode_scanner: ^0.0.8
 
 dev_dependencies:
   flutter_test:
