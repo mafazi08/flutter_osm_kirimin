@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_kirimin/Page/Lacak_pesanan.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 class BerandaPage extends StatefulWidget {
@@ -31,7 +32,9 @@ class _BerandaPageState extends State<BerandaPage> {
         title: ElevatedButton.icon(
             icon: Icon(Icons.search),
             label: Text("Lacak Pesanan"),
-            onPressed: (){},
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const lacakPesananPage()));
+            },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF717070),
                 foregroundColor: Colors.white,
