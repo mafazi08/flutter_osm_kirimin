@@ -16,6 +16,7 @@ class BerandaPage extends StatefulWidget {
 }
 
 class _BerandaPageState extends State<BerandaPage> {
+  String result = '';
 
   double? currentLatitude;
   double? currentLongitude;
@@ -91,7 +92,7 @@ class _BerandaPageState extends State<BerandaPage> {
         roadConfiguration: const RoadOption(roadColor: Colors.blue,zoomInto: true,roadWidth: 10),
         onMapIsReady: (isReady) async {
           if(isReady){
-            await Future.delayed(const Duration(seconds: 3),() async{
+            await Future.delayed(const Duration(seconds: 5),() async{
               await _mapController.currentLocation();
               if (paketLatitude != null && paketLongitude != null) {
                 await _mapController.addMarker(
