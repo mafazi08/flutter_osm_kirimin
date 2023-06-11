@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_osm_kirimin/main.dart';
 
 class DaftarPaketPage extends StatefulWidget {
-  const DaftarPaketPage({Key? key}) : super(key: key);
+  final VoidCallback onTap;
+
+  const DaftarPaketPage({Key? key,required this.onTap}) : super(key: key);
 
   @override
   State<DaftarPaketPage> createState() => _DaftarPaketPageState();
@@ -12,10 +17,16 @@ class DaftarPaketPage extends StatefulWidget {
 
 class _DaftarPaketPageState extends State<DaftarPaketPage> {
   List _listPaket = [];
+  double? paketLatitude;
+  double? paketLongitude;
+
 
   Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/sample.json');
-    final data = await json.decode(response);
+    const apiUrl= 'https://my-json-server.typicode.com/mafazi08/json_kirimin/db';
+
+    final response = await http.get(Uri.parse(apiUrl));
+    final data = await json.decode(response.body);
+
     setState(() {
       _listPaket = data["items"];
     });
@@ -49,6 +60,12 @@ class _DaftarPaketPageState extends State<DaftarPaketPage> {
                         Text(_listPaket[index]["alamat"])
                         ]
                       ),
+                      onTap: (){
+                        paketLatitude = double.parse(_listPaket[index]["latitude"]);
+                        paketLongitude = double.parse(_listPaket[index]["longitude"]);
+                        Provider.of<PaketData>(context, listen: false).setPaketData(paketLatitude!, paketLongitude!);
+                        widget.onTap();
+                      },
                     ),
                   );
                 },
