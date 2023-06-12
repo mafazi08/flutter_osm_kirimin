@@ -5,7 +5,6 @@ import 'package:flutter_osm_kirimin/Page/Beranda.dart';
 import 'package:flutter_osm_kirimin/Page/Daftar_Paket.dart';
 import 'package:flutter_osm_kirimin/Page/Saya.dart';
 
-
 void main() {
   runApp(
     ChangeNotifierProvider(
