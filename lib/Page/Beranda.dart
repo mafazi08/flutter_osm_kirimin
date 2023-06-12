@@ -63,15 +63,17 @@ class BerandaPageState extends State<BerandaPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         backgroundColor: const Color(0xFF70986C),
         title: ElevatedButton.icon(
             icon: const Icon(Icons.search),
             label: const Text("Lacak Pesanan"),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const lacakPesananPage()))
-              ;//navigator push
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const lacakPesananPage()));
+              if (_lastMarker != null) {
+                _mapController.removeLastRoad();
+                _mapController.removeMarker(_lastMarker!);
+                _mapController.currentLocation();
+              } else {};
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF717070),
@@ -88,7 +90,7 @@ class BerandaPageState extends State<BerandaPage> {
         mapIsLoading: const Center(
             child: CircularProgressIndicator()
         ),
-        trackMyPosition: shouldTrackPosition,
+        trackMyPosition: false,
         initZoom: 12,
         minZoomLevel: 2,
         maxZoomLevel: 19,
@@ -105,12 +107,10 @@ class BerandaPageState extends State<BerandaPage> {
         roadConfiguration: const RoadOption(roadColor: Color(0xFF70986C),zoomInto: true,roadWidth: 15),
         onMapIsReady: (isReady) async {
           if(isReady){
-            shouldTrackPosition = true;
-            await Future.delayed(const Duration(seconds: 5),() async{
-              await _mapController.clearAllRoads();
+            await Future.delayed(const Duration(seconds: 1),() async{
               await _mapController.currentLocation();
+              await _mapController.removeLastRoad();
               if (_lastMarker != null) {
-                shouldTrackPosition = false;
                 await _mapController.addMarker(_lastMarker!,
                     markerIcon: const MarkerIcon(
                         icon: Icon(Icons.backpack, color: Color(0xFF70986C),
@@ -125,10 +125,8 @@ class BerandaPageState extends State<BerandaPage> {
                       ]), paddinInPixel: 1000
                   );
                 } else {
-                  shouldTrackPosition = true;
                 };
               } else {
-                shouldTrackPosition = true;
               };
             });
           }
