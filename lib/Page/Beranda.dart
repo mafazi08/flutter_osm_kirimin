@@ -20,6 +20,7 @@ class _BerandaPageState extends State<BerandaPage> {
 
   double? currentLatitude;
   double? currentLongitude;
+  bool shouldTrackPosition = false;
 
   final _mapController = MapController(
       initMapWithUserPosition: true
@@ -53,15 +54,15 @@ class _BerandaPageState extends State<BerandaPage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        backgroundColor: Color(0xFF70986C),
+        backgroundColor: const Color(0xFF70986C),
         title: ElevatedButton.icon(
-            icon: Icon(Icons.search),
-            label: Text("Lacak Pesanan"),
+            icon: const Icon(Icons.search),
+            label: const Text("Lacak Pesanan"),
             onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => const lacakPesananPage()));
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF717070),
+                backgroundColor: const Color(0xFF717070),
                 foregroundColor: Colors.white,
                 shape:RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32)
@@ -75,8 +76,8 @@ class _BerandaPageState extends State<BerandaPage> {
         mapIsLoading: const Center(
             child: CircularProgressIndicator()
         ),
-        trackMyPosition: false,
-        initZoom: 9,
+        trackMyPosition: shouldTrackPosition,
+        initZoom: 12,
         minZoomLevel: 2,
         maxZoomLevel: 19,
         stepZoom: 1.0,
@@ -89,19 +90,20 @@ class _BerandaPageState extends State<BerandaPage> {
                 icon: Icon(Icons.location_on,color: Color(0xFF70986C),size: 96,)
             )
         ),
-        roadConfiguration: const RoadOption(roadColor: Colors.blue,zoomInto: true,roadWidth: 10),
+        roadConfiguration: const RoadOption(roadColor: Color(0xFF70986C),zoomInto: true,roadWidth: 15),
         onMapIsReady: (isReady) async {
           if(isReady){
-            await Future.delayed(const Duration(seconds: 5),() async{
+            await Future.delayed(const Duration(seconds: 1),() async{
               await _mapController.currentLocation();
               if (paketLatitude != null && paketLongitude != null) {
                 await _mapController.addMarker(
                     GeoPoint(
                         latitude: paketLatitude!, longitude: paketLongitude!),
-                    markerIcon: MarkerIcon(
+                    markerIcon: const MarkerIcon(
                         icon: Icon(Icons.backpack, color: Color(0xFF70986C),
                             size: 96)));
                 if (currentLatitude != null && currentLongitude != null) {
+                  shouldTrackPosition = false;
                   await _mapController.drawRoad(
                       GeoPoint(latitude: paketLatitude!, longitude: paketLongitude!),
                       GeoPoint(latitude: currentLatitude!,
@@ -115,20 +117,10 @@ class _BerandaPageState extends State<BerandaPage> {
                       ]), paddinInPixel: 1000
                   );
                 } else {
-                  await _mapController.zoomToBoundingBox(
-                      BoundingBox.fromGeoPoints([
-                        GeoPoint(latitude: currentLatitude!,
-                            longitude: currentLongitude!)
-                      ]), paddinInPixel: 1000
-                  );
+                  shouldTrackPosition = true;
                 };
               } else {
-                await _mapController.zoomToBoundingBox(
-                    BoundingBox.fromGeoPoints([
-                      GeoPoint(latitude: currentLatitude!,
-                          longitude: currentLongitude!)
-                    ]), paddinInPixel: 1000
-                );
+                shouldTrackPosition = true;
               };
             });
           }
