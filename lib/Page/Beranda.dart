@@ -12,15 +12,18 @@ class BerandaPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<BerandaPage> createState() => _BerandaPageState();
+  State<BerandaPage> createState() => BerandaPageState();
 }
 
-class _BerandaPageState extends State<BerandaPage> {
-  String result = '';
+class BerandaPageState extends State<BerandaPage> {
 
+  String result = '';
+  GeoPoint? _lastMarker;
+  GeoPoint? _myMarker;
   double? currentLatitude;
   double? currentLongitude;
   bool shouldTrackPosition = false;
+
 
   final _mapController = MapController(
       initMapWithUserPosition: true
@@ -30,6 +33,9 @@ class _BerandaPageState extends State<BerandaPage> {
   void dispose() {
     super.dispose();
     _mapController.dispose();
+    if (_lastMarker != null) {
+      _mapController.removeMarker(_lastMarker!);
+    }
   }
 
   void getCurrentLocation() async {
@@ -37,6 +43,7 @@ class _BerandaPageState extends State<BerandaPage> {
     setState(() {
       currentLatitude = currentPosition.latitude;
       currentLongitude = currentPosition.longitude;
+      _myMarker = GeoPoint(latitude: currentLatitude!, longitude: currentLongitude!);
     });
   }
 
@@ -48,8 +55,12 @@ class _BerandaPageState extends State<BerandaPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Beranda build");
     double? paketLatitude = Provider.of<PaketData>(context).paketLatitude;
     double? paketLongitude = Provider.of<PaketData>(context).paketLongitude;
+    if (paketLatitude != null && paketLongitude != null) {
+      _lastMarker = GeoPoint(latitude: paketLatitude, longitude: paketLongitude);
+    }
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -58,8 +69,9 @@ class _BerandaPageState extends State<BerandaPage> {
         title: ElevatedButton.icon(
             icon: const Icon(Icons.search),
             label: const Text("Lacak Pesanan"),
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const lacakPesananPage()));
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const lacakPesananPage()))
+              ;//navigator push
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF717070),
@@ -93,27 +105,23 @@ class _BerandaPageState extends State<BerandaPage> {
         roadConfiguration: const RoadOption(roadColor: Color(0xFF70986C),zoomInto: true,roadWidth: 15),
         onMapIsReady: (isReady) async {
           if(isReady){
-            await Future.delayed(const Duration(seconds: 1),() async{
+            shouldTrackPosition = true;
+            await Future.delayed(const Duration(seconds: 5),() async{
+              await _mapController.clearAllRoads();
               await _mapController.currentLocation();
-              if (paketLatitude != null && paketLongitude != null) {
-                await _mapController.addMarker(
-                    GeoPoint(
-                        latitude: paketLatitude!, longitude: paketLongitude!),
+              if (_lastMarker != null) {
+                shouldTrackPosition = false;
+                await _mapController.addMarker(_lastMarker!,
                     markerIcon: const MarkerIcon(
                         icon: Icon(Icons.backpack, color: Color(0xFF70986C),
                             size: 96)));
-                if (currentLatitude != null && currentLongitude != null) {
-                  shouldTrackPosition = false;
+                if (_myMarker != null) {
                   await _mapController.drawRoad(
-                      GeoPoint(latitude: paketLatitude!, longitude: paketLongitude!),
-                      GeoPoint(latitude: currentLatitude!,
-                          longitude: currentLongitude!)
+                      _lastMarker!,_myMarker!
                   );
                   await _mapController.zoomToBoundingBox(
                       BoundingBox.fromGeoPoints([
-                        GeoPoint(latitude: paketLatitude!, longitude: paketLongitude!),
-                        GeoPoint(latitude: currentLatitude!,
-                            longitude: currentLongitude!)
+                        _lastMarker!,_myMarker!
                       ]), paddinInPixel: 1000
                   );
                 } else {

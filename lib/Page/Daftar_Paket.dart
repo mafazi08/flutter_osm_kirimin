@@ -40,6 +40,7 @@ class _DaftarPaketPageState extends State<DaftarPaketPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('DaftarPaket.dart');
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color(0xFF70986C),
